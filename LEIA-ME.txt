@@ -1,0 +1,14 @@
+VIBRASER® NUMEROLOGIA — PWA v1.8
+
+Esta pasta é a versão PWA (aplicação web instalável) da aplicação.
+
+IMPORTANTE:
+Uma PWA só pode ser instalada pelo Chrome quando é aberta através de HTTPS (ou localhost). Um ficheiro HTML aberto diretamente a partir de Transferências funciona, mas NÃO pode ser instalado como PWA pelo Chrome.
+
+PARA INSTALAR NO CHROMEBOOK:
+1. Coloca estes ficheiros num alojamento HTTPS (por exemplo, GitHub Pages, Cloudflare Pages ou outro alojamento web).
+2. Abre o endereço HTTPS no Chrome.
+3. No menu do Chrome escolhe “Instalar VibraSer® Numerologia” (ou usa o ícone de instalação na barra de endereço, quando aparecer).
+4. A aplicação abre numa janela própria e continua a funcionar offline depois de ter sido carregada pela primeira vez.
+
+A aplicação mantém os dados localmente no navegador/dispositivo. Faz regularmente o backup dentro da própria aplicação.
