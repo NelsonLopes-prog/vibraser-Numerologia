@@ -1,4 +1,4 @@
-const CACHE = 'vibraser-numerologia-v1-8-pwa';
+const CACHE = 'vibraser-numerologia-v1-9-pwa';
 const ASSETS = [
   './',
   './index.html',

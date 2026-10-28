@@ -89,6 +89,17 @@ button{cursor:pointer}
 <style id="audit-fix-print">
 @media print { body{overflow:visible!important;background:#fff!important} .sidebar,.topbar,#login,.no-print{display:none!important} .main{height:auto!important;overflow:visible!important} .content{padding:0!important} .view{display:none!important} #pdf{display:block!important} #pdf .pdf-sheet{display:block!important;box-shadow:none!important;border:0!important} }
 .interpret-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}.interpret-card{padding:20px}.interpret-card h3{margin:0 0 6px}.interpret-card .number{font-size:30px;color:var(--gold);font-weight:700}.interpret-card p{font-family:Arial,sans-serif;line-height:1.6;color:#51465b}.pdf-sheet{background:#fff;border-radius:16px;padding:30px;box-shadow:var(--shadow)}
+
+.editorial-report{margin:30px 0 12px;padding:26px 28px;border:1px solid #eadfea;border-radius:14px;background:#fff;color:#302047;line-height:1.75;break-inside:auto}
+.editorial-report .editorial-kicker{font:700 11px Arial,sans-serif;letter-spacing:2px;color:#b58a3a}
+.editorial-report h2{font-size:27px;margin:8px 0 14px;color:#4b2768}
+.editorial-report h3{font-size:19px;margin:24px 0 8px;color:#6f4b8e;break-after:avoid}
+.editorial-report p,.editorial-report li{font:14px/1.8 Arial,sans-serif;color:#51465b}
+.editorial-report .editorial-reflection{margin-top:22px;padding:16px 20px;background:#fbf6ed;border-left:3px solid #c9a45b;border-radius:8px;break-inside:avoid}
+.editorial-report .editorial-reflection h3{margin-top:0}
+.editorial-report .editorial-note{font:11px/1.6 Arial,sans-serif;color:#756985;border-top:1px solid #eadfea;padding-top:12px;margin-top:22px}
+@media print{.editorial-report{box-shadow:none;border-color:#ddd;margin:18px 0;padding:20px;break-inside:auto}.editorial-report h3{break-after:avoid}.editorial-reflection{break-inside:avoid}}
+
 </style>
 </head>
 <body>
@@ -405,13 +416,71 @@ function renderInterpretation(){
  const items=[['Caminho de Vida','life',calc.life],['Expressão','expression',calc.expression],['Alma','soul',calc.soul],['Personalidade','personality',calc.personality],['Maturidade','maturity',calc.maturity]];
  grid.innerHTML=items.map(([label,key,n])=>`<div class="card interpret-card"><div class="muted">${label}</div><div class="number">${n}</div><h3>${esc(archetype(n))}</h3><p>${interpretationText(label,key,n)}</p></div>`).join('');
 }
+
+const editorialProfiles={
+  1:{theme:'autonomia e iniciativa',resource:'abrir caminhos, tomar decisões e iniciar movimentos',balance:'distinguir autonomia de isolamento e iniciativa de pressa'},
+  2:{theme:'cooperação e sensibilidade',resource:'escutar, mediar diferenças e construir relações de confiança',balance:'preservar os próprios limites sem perder a capacidade de cooperar'},
+  3:{theme:'criatividade e comunicação',resource:'dar forma às ideias, comunicar e criar ligações através da expressão',balance:'transformar inspiração em continuidade e evitar dispersão'},
+  4:{theme:'estrutura e consistência',resource:'organizar recursos, criar bases sólidas e sustentar processos',balance:'manter flexibilidade e não confundir segurança com rigidez'},
+  5:{theme:'liberdade e mudança',resource:'explorar possibilidades, adaptar-se e aprender pela experiência',balance:'conciliar variedade com compromisso e dar tempo à consolidação'},
+  6:{theme:'cuidado e responsabilidade',resource:'promover harmonia, apoiar pessoas e cuidar do que tem valor',balance:'não assumir responsabilidades que pertencem aos outros'},
+  7:{theme:'profundidade e investigação',resource:'observar com atenção, estudar e procurar significado para além da superfície',balance:'partilhar o que descobre e evitar que a análise se transforme em afastamento'},
+  8:{theme:'realização e gestão',resource:'organizar recursos, assumir responsabilidades e transformar objetivos em resultados',balance:'aliar ambição à ética e ao respeito pelos limites próprios e alheios'},
+  9:{theme:'compaixão e visão ampla',resource:'compreender diferentes perspetivas, contribuir e reconhecer ciclos que chegam ao fim',balance:'ajudar sem se esquecer de si e aceitar que nem tudo pode ser resolvido'},
+  11:{theme:'intuição e inspiração',resource:'captar possibilidades, inspirar e dar atenção a perceções subtis',balance:'traduzir a inspiração em passos concretos e distinguir intuição de certeza'},
+  22:{theme:'visão aplicada à construção',resource:'ligar uma visão ampla a estruturas, projetos e resultados concretos',balance:'avançar por etapas e não exigir de si a responsabilidade de fazer tudo'},
+  33:{theme:'serviço e compaixão',resource:'cuidar, ensinar e contribuir a partir de uma visão generosa',balance:'praticar o cuidado com limites saudáveis e sem perfeccionismo'}
+};
+function editorialProfile(n){return editorialProfiles[n]||{theme:'desenvolvimento pessoal',resource:'reconhecer recursos e possibilidades próprias',balance:'procurar equilíbrio entre intenção e ação'};}
+function generateEditorialReport(client,calc){
+  const life=editorialProfile(calc.life),expression=editorialProfile(calc.expression),soul=editorialProfile(calc.soul),personality=editorialProfile(calc.personality),maturity=editorialProfile(calc.maturity);
+  const values=[calc.life,calc.expression,calc.soul,calc.personality,calc.maturity];
+  const counts={};values.forEach(n=>counts[n]=(counts[n]||0)+1);
+  const repeated=Object.keys(counts).filter(n=>counts[n]>1);
+  const repetitionText=repeated.length
+    ? 'Neste mapa, o número '+repeated.join(', ')+' aparece mais do que uma vez. Numa leitura simbólica, essa repetição pode servir de convite para observar com mais atenção os temas associados: '+repeated.map(n=>editorialProfile(Number(n)).theme).join('; ')+'. Não representa um destino fixo nem garante acontecimentos.'
+    : 'Os cinco indicadores apresentam valores diferentes. Como exercício simbólico, isto permite explorar temas variados e observar como podem complementar-se, sem pressupor que tenham de estar sempre em harmonia.';
+  const innerOuter=calc.soul===calc.personality
+    ? 'Alma e Personalidade partilham o mesmo número. Esta coincidência pode ser explorada como uma hipótese de alinhamento entre necessidades interiores e a forma como te apresentas ao mundo; a experiência concreta é que permite avaliar se isso se confirma.'
+    : 'Alma e Personalidade têm números diferentes. Isto não significa conflito obrigatório: pode ser útil investigar quando aquilo de que precisas interiormente coincide com a imagem que mostras e quando é necessário comunicar melhor as tuas necessidades.';
+  const lifeExpression=calc.life===calc.expression
+    ? 'Caminho de Vida e Expressão coincidem numericamente. Na linguagem simbólica da numerologia, esta convergência convida a observar se a direção que atribuis à tua vida encontra expressão nos teus talentos e escolhas.'
+    : 'Caminho de Vida e Expressão apontam para temas diferentes: '+life.theme+' e '+expression.theme+'. A relação entre ambos pode ser pensada como uma ponte entre direção pessoal e modo de agir, não como uma contradição.';
+  return `<section class="editorial-report">
+    <div class="editorial-kicker">LEITURA INTEGRADA · VIBRASER®</div>
+    <h2>Uma leitura do conjunto</h2>
+    <p>Este relatório reúne os cinco indicadores do mapa de <strong>${esc(client.name)}</strong>. Em vez de olhar para cada número isoladamente, propõe relações entre direção, expressão, necessidades interiores, presença e desenvolvimento. A numerologia é aqui utilizada como linguagem simbólica de reflexão: não define a pessoa nem substitui a sua experiência, as suas escolhas ou o seu próprio discernimento.</p>
+    <h3>1. Direção e expressão</h3>
+    <p>O Caminho de Vida <strong>${calc.life} — ${esc(archetype(calc.life))}</strong> está associado, nesta leitura, a ${life.theme}. Pode convidar a reconhecer como ${life.resource}. O ponto de equilíbrio a observar será ${life.balance}.</p>
+    <p>A Expressão <strong>${calc.expression} — ${esc(archetype(calc.expression))}</strong> acrescenta o tema de ${expression.theme}. Pode ser explorada através da capacidade de ${expression.resource}, tendo presente a necessidade de ${expression.balance}.</p>
+    <p>${lifeExpression}</p>
+    <h3>2. Mundo interior e presença</h3>
+    <p>A Alma <strong>${calc.soul} — ${esc(archetype(calc.soul))}</strong> representa, simbolicamente, uma área de motivação interior ligada a ${soul.theme}. Pergunta útil: que espaço existe na tua vida para ${soul.resource}?</p>
+    <p>A Personalidade <strong>${calc.personality} — ${esc(archetype(calc.personality))}</strong> oferece uma lente para observar a presença exterior e a forma como podes ser percebido. O tema de ${personality.theme} pode manifestar-se quando ${personality.resource}; o equilíbrio passa por ${personality.balance}.</p>
+    <p>${innerOuter}</p>
+    <h3>3. Desenvolvimento e maturidade</h3>
+    <p>A Maturidade <strong>${calc.maturity} — ${esc(archetype(calc.maturity))}</strong> é interpretada como um convite a integrar a experiência ao longo do tempo. O tema de ${maturity.theme} pode ganhar expressão através de ${maturity.resource}. Como ponto de atenção, vale observar como ${maturity.balance}.</p>
+    <h3>4. Padrões e relações entre os números</h3>
+    <p>${repetitionText}</p>
+    <p>O conjunto não deve ser lido como uma lista de qualidades fixas. Os números podem representar possibilidades que se reforçam em certos contextos e pedem equilíbrio noutros. A observação do quotidiano, das relações e das decisões concretas é essencial para perceber o que faz sentido para cada pessoa.</p>
+    <h3>Síntese</h3>
+    <p>Este mapa convida a explorar como ${life.theme} pode orientar escolhas, como ${expression.theme} pode dar-lhes forma, o que ${soul.theme} revela sobre as motivações interiores e de que modo ${personality.theme} se torna visível na relação com os outros. A Maturidade acrescenta uma perspetiva de integração gradual, sem impor prazos nem resultados predeterminados.</p>
+    <div class="editorial-reflection"><h3>Para reflexão pessoal</h3><ol>
+      <li>Qual destes temas reconheces com mais clareza na tua vida atual?</li>
+      <li>Em que situação recente sentiste equilíbrio entre o que precisavas, o que expressaste e o que fizeste?</li>
+      <li>Que pequeno passo concreto poderia ajudar-te a desenvolver um dos recursos identificados?</li>
+    </ol></div>
+    <p class="editorial-note">Nota de leitura: esta interpretação é gerada por regras editoriais locais, sem serviço externo de IA. É uma ferramenta de reflexão simbólica, não um diagnóstico nem uma previsão científica.</p>
+  </section>`;
+}
+
 function renderPdfMapSelect(){syncMapSelectors();}
 function renderPdf(){
  const sheet=document.getElementById('pdfSheet');if(!sheet)return; const map=currentMap();
  if(!map){sheet.innerHTML='<div class="empty">Ainda não existe nenhum mapa para preparar.</div>';return;}
  const c=data.clients.find(x=>x.id===map.clientId);if(!c||!c.birth){sheet.innerHTML='<div class="notice">O mapa precisa de uma ficha de cliente com data de nascimento.</div>';return;}
  const calc=map.calculations||calculateNumerology(c);map.calculations=calc;save();
- sheet.innerHTML=`<div style="text-align:center;border-bottom:2px solid #c9a45b;padding-bottom:18px;margin-bottom:22px"><div style="font-size:12px;letter-spacing:3px;color:#c9a45b">VIBRASER®</div><h1 style="margin:8px 0">Mapa Numerológico</h1><div style="color:#756985">Conhecer · Integrar · Transformar</div></div><h2>${esc(c.name)}</h2><p><strong>Data de nascimento:</strong> ${formatDate(c.birth)} &nbsp; <strong>Mapa:</strong> ${formatDate(map.date)}</p><div class="interpret-grid" style="margin-top:20px">${[['Caminho de Vida','life',calc.life],['Expressão','expression',calc.expression],['Alma','soul',calc.soul],['Personalidade','personality',calc.personality],['Maturidade','maturity',calc.maturity]].map(([label,key,n])=>`<div class="card interpret-card"><div class="muted">${label}</div><div class="number">${n}</div><h3>${esc(archetype(n))}</h3><p>${interpretationText(label,key,n)}</p></div>`).join('')}</div><div style="margin-top:28px;padding-top:16px;border-top:1px solid #eadfea;font-size:12px;color:#756985">Regra aplicada: Numerologia Pitagórica clássica. 11, 22 e 33 são preservados; Y e W são tratados como consoantes.</div>`;
+ sheet.innerHTML=`<div style="text-align:center;border-bottom:2px solid #c9a45b;padding-bottom:18px;margin-bottom:22px"><div style="font-size:12px;letter-spacing:3px;color:#c9a45b">VIBRASER®</div><h1 style="margin:8px 0">Mapa Numerológico</h1><div style="color:#756985">Conhecer · Integrar · Transformar</div></div><h2>${esc(c.name)}</h2><p><strong>Data de nascimento:</strong> ${formatDate(c.birth)} &nbsp; <strong>Mapa:</strong> ${formatDate(map.date)}</p>${generateEditorialReport(c,calc)}<h2 style="margin-top:30px">Os cinco indicadores</h2><div class="interpret-grid" style="margin-top:20px">${[['Caminho de Vida','life',calc.life],['Expressão','expression',calc.expression],['Alma','soul',calc.soul],['Personalidade','personality',calc.personality],['Maturidade','maturity',calc.maturity]].map(([label,key,n])=>`<div class="card interpret-card"><div class="muted">${label}</div><div class="number">${n}</div><h3>${esc(archetype(n))}</h3><p>${interpretationText(label,key,n)}</p></div>`).join('')}</div><div style="margin-top:28px;padding-top:16px;border-top:1px solid #eadfea;font-size:12px;color:#756985">Regra aplicada: Numerologia Pitagórica clássica. 11, 22 e 33 são preservados; Y e W são tratados como consoantes.</div>`;
 }
 function createMap(){
   const clientId=document.getElementById('mapClientSelect').value;if(!clientId){alert('Seleciona um cliente.');return}
